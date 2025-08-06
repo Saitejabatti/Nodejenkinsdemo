@@ -18,14 +18,15 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'echo Build step (e.g., lint/test) here'
+                echo 'This is the Build stage'
+                // If needed, you can add commands like:
+                // sh 'npm run build' or 'npm test'
             }
         }
 
         stage('Run App') {
             steps {
-                // Run the app in background so pipeline can complete
-                sh 'node index.js &'
+                sh 'nohup node index.js &'
                 echo 'App started in background'
             }
         }
