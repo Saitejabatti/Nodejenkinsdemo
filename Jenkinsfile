@@ -1,9 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:18' // or 'node:20' or latest stable version
-        }
-    }
+    agent any
 
     stages {
         stage('Clone Repo') {
@@ -20,13 +16,16 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'echo "Build step (e.g., lint/test) here"'
+                sh 'echo Build step (e.g., lint/test) here'
             }
         }
 
         stage('Run App') {
             steps {
-                sh 'node index.js'
+                // Run the app in background so pipeline can complete
+                sh 'node index.js &'
+                // Optional message
+                echo 'App started in background'
             }
         }
     }
