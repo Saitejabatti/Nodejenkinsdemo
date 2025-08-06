@@ -1,12 +1,16 @@
 pipeline {
-    agent {
-        docker { image 'node:18' }
+    agent any
+
+    environment {
+        IMAGE_NAME = "nodejenkinsdemo-app"
+        CONTAINER_NAME = "nodejenkinsdemo-container"
     }
 
     stages {
-        stage('Clone Repo') {
+        stage('Checkout') {
             steps {
                 echo 'Cloning the repository...'
+                checkout scm
             }
         }
 
@@ -16,19 +20,31 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
-                echo 'This is the Build stage'
-                // If needed, you can add commands like:
-                // sh 'npm run build' or 'npm test'
+                echo "Building Docker image..."
+                sh "docker build -t $IMAGE_NAME ."
             }
         }
 
-        stage('Run App') {
+        stage('Run Docker Container') {
             steps {
-                sh 'nohup node index.js &'
-                echo 'App started in background'
+                echo "Stopping and removing old container if exists..."
+                sh "docker stop $CONTAINER_NAME || true"
+                sh "docker rm $CONTAINER_NAME || true"
+
+                echo "Running Docker container..."
+                sh "docker run -d --name $CONTAINER_NAME -p 3000:3000 $IMAGE_NAME"
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed.'
         }
     }
 }
