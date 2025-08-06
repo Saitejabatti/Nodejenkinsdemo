@@ -1,11 +1,14 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'node:18' // or 'node:20' or latest stable version
+        }
+    }
 
     stages {
         stage('Clone Repo') {
             steps {
                 echo 'Cloning the repository...'
-                // Jenkins already does this automatically, but you can add echo
             }
         }
 
@@ -17,15 +20,13 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo 'Building the app...'
-                // Add any build steps if needed
+                sh 'echo "Build step (e.g., lint/test) here"'
             }
         }
 
         stage('Run App') {
             steps {
-                echo 'App would be started here.'
-                // Example: sh 'node index.js'
+                sh 'node index.js'
             }
         }
     }
