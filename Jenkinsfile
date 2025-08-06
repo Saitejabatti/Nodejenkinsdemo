@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        docker { image 'node:18' }
+    }
 
     stages {
         stage('Clone Repo') {
@@ -24,7 +26,6 @@ pipeline {
             steps {
                 // Run the app in background so pipeline can complete
                 sh 'node index.js &'
-                // Optional message
                 echo 'App started in background'
             }
         }
